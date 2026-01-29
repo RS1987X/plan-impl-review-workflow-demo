@@ -167,7 +167,104 @@ Verification (run from repo root):
 - source .venv/bin/activate && PYTHONPATH=$(pwd) pytest tests/unit/
 - source .venv/bin/activate && PYTHONPATH=$(pwd) pytest tests/
 
+Delivery (so the reviewer can actually review):
+1) Push your branch: `git push -u origin HEAD`
+2) Open a PR to `main` (or paste the branch name + compare link)
+3) In the PR description/comment, include:
+	- Branch name (especially if it’s `copilot/...`)
+	- Commands run + results
+	- Any known limitations / follow-ups
+
 If anything is ambiguous, ask clarifying questions before editing.
+```
+
+---
+
+## 4.1) How to invoke each agent (local chat vs GitHub Coding Agent)
+
+You can run these roles using either:
+- **Local chat agent mode (in-editor)**: fast iteration, can read/edit your current workspace, good for interactive debugging.
+- **GitHub Copilot Coding Agent (PR-based)**: async, produces a branch/PR artifact, best when you want durable review artifacts and clean separation.
+
+Recommended defaults:
+- **Planner:** local chat agent mode (writes docs/specs); commit the plan to a branch (or `main`) so it can’t be lost.
+- **Implementer:** GitHub Coding Agent when you want a PR created; local chat agent mode when you’re implementing locally and pushing manually.
+- **Reviewer:** GitHub Coding Agent for PR review (diff + checks + review comments), or local chat agent mode when you’re reviewing a local branch in a clean review worktree.
+
+Rule of thumb:
+- If you need a **shareable artifact** (PR, review comments, CI trail) → prefer **GitHub Coding Agent**.
+- If you need **rapid back-and-forth** or to explore locally → prefer **local chat agent mode**.
+
+---
+
+## 4.2) PR-based end-to-end runbook (recommended)
+
+Use this when you want clean handoffs and durable review artifacts (PR + review comments).
+
+### A) One-time: create worktrees
+
+From the base repo directory:
+
+```bash
+./scripts/create-worktrees.sh <feature>
+```
+
+This creates:
+- planner branch: `plan-<feature>`
+- implementer branch: `feat-<feature>`
+- reviewer branch: `review-<feature>`
+
+### B) Planner (docs/spec)
+
+1) Write the plan in the planner worktree.
+2) Commit + push so it can’t be lost:
+
+```bash
+git add -A
+git commit -m "Add plan"
+git push -u origin HEAD
+```
+
+### C) Implementer (GitHub Coding Agent → PR)
+
+1) Create a GitHub issue that links the plan and states scope + verification + delivery requirements.
+2) Assign to GitHub Coding Agent.
+3) Expected deliverables:
+	- pushes a branch to `origin` (sometimes `copilot/...`)
+	- opens a PR to `main`
+	- includes commands run + results in the PR description
+
+### D) Reviewer (clean checkout + review report)
+
+1) Identify the PR branch name (from the PR description). If it’s the standard branch, you can omit the ref.
+2) Sync/merge into the reviewer worktree:
+
+```bash
+./scripts/sync-worktrees.sh <feature> [origin/<implementer-branch>]
+```
+
+3) Review + verify from the reviewer worktree:
+
+```bash
+git diff origin/main...HEAD
+npm test
+npm run build
+```
+
+4) Produce the review report as PR review + a structured comment (must-fix / suggestions / commands run).
+
+### E) Fix loop (repeat until approved)
+
+1) Implementer updates the same PR branch.
+2) Reviewer reruns the sync command above and re-runs checks.
+
+### F) Merge + cleanup
+
+1) Merge the PR into `main`.
+2) (Optional) remove worktrees:
+
+```bash
+./scripts/remove-worktrees.sh
 ```
 
 ---
@@ -176,6 +273,7 @@ If anything is ambiguous, ask clarifying questions before editing.
 
 Suggested review checklist:
 - Scope matches the plan (no Phase 2+ creep)
+- Confirm you’re reviewing the right branch/PR (implementer should state the exact branch name; watch for `copilot/...`)
 - No GUI blocking introduced (threading is correct)
 - Tests cover core logic + edge cases
 - Logging is reasonable (no prints)
