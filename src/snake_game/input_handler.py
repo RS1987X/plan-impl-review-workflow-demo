@@ -131,3 +131,14 @@ class InputHandler:
             True if restart key pressed
         """
         return char in ('r', 'R')
+    
+    def should_pause(self, char: str) -> bool:
+        """Check if user wants to pause/unpause.
+        
+        Args:
+            char: Character to check
+            
+        Returns:
+            True if pause key pressed
+        """
+        return char in ('p', 'P')
