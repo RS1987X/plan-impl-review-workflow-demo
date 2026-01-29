@@ -50,11 +50,17 @@ class Snake:
         Args:
             new_direction: Direction to move (validated against reversal)
         """
-        # Prevent reversing direction
-        if new_direction != self.direction.opposite():
-            self.direction = new_direction
+        # Store current direction before any changes
+        current_direction = self.direction
         
-        # Calculate new head position
+        # Prevent reversing direction - compare new direction against current
+        if new_direction != current_direction.opposite():
+            self.direction = new_direction
+        else:
+            # If reversal attempted, keep moving in current direction
+            self.direction = current_direction
+        
+        # Calculate new head position using the validated direction
         dx, dy = self.direction.value
         head_x, head_y = self.get_head_position()
         new_head = (head_x + dx, head_y + dy)

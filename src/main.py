@@ -76,6 +76,22 @@ def main():
                             engine.restart()
                             break
             
+            elif engine.get_state() == GameState.VICTORY:
+                # Display victory screen
+                renderer.display_victory(engine.get_score())
+                
+                # Wait for restart or quit
+                while engine.get_state() == GameState.VICTORY:
+                    # Check for input using helper function
+                    char = wait_for_input(0.1)
+                    if char:
+                        if char in ('q', 'Q', '\x1b'):  # Quit
+                            running = False
+                            break
+                        elif char in ('r', 'R'):  # Restart
+                            engine.restart()
+                            break
+            
             # Maintain tick rate
             elapsed = time.time() - start_time
             if elapsed < tick_duration:

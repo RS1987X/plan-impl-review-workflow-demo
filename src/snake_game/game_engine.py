@@ -26,6 +26,7 @@ class GameEngine:
         self.food = Food()
         self.score = 0
         self.state = GameState.RUNNING
+        self._pending_direction = None  # Store pending direction change
         
         # Spawn initial food
         self.food.spawn(self.board, self.snake)
@@ -38,8 +39,12 @@ class GameEngine:
         if self.state != GameState.RUNNING:
             return
         
-        # Move snake in current direction
-        self.snake.move(self.snake.direction)
+        # Apply pending direction if there is one, otherwise use current direction
+        direction_to_move = self._pending_direction if self._pending_direction else self.snake.direction
+        self._pending_direction = None  # Clear pending direction
+        
+        # Move snake in chosen direction
+        self.snake.move(direction_to_move)
         
         # Check collisions
         self.check_collisions()
@@ -51,9 +56,9 @@ class GameEngine:
             direction: New direction to move
         """
         if self.state == GameState.RUNNING:
-            # Prevent reversing direction (checked here and also in snake.move)
-            if direction != self.snake.direction.opposite():
-                self.snake.direction = direction
+            # Store the direction to be applied on next tick
+            # Direction validation happens in snake.move()
+            self._pending_direction = direction
     
     def check_collisions(self) -> None:
         """Check for all collision types and update game state accordingly."""
@@ -79,7 +84,7 @@ class GameEngine:
                 self.food.spawn(self.board, self.snake)
             except RuntimeError:
                 # Board is full - victory condition
-                self.state = GameState.GAME_OVER
+                self.state = GameState.VICTORY
     
     def get_state(self) -> GameState:
         """Get the current game state.
@@ -105,4 +110,5 @@ class GameEngine:
         self.food = Food()
         self.score = 0
         self.state = GameState.RUNNING
+        self._pending_direction = None  # Clear pending direction
         self.food.spawn(self.board, self.snake)

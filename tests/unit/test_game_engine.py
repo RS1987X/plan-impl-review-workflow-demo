@@ -48,15 +48,25 @@ class TestGameEngine:
         assert engine.snake.direction == Direction.UP
     
     def test_handle_input_prevents_reversal(self):
-        """Test that handle_input prevents direction reversal."""
+        """Test that direction reversal is prevented during snake movement."""
         engine = GameEngine()
-        initial_direction = engine.snake.direction
+        initial_direction = engine.snake.direction  # RIGHT
+        initial_head = engine.snake.get_head_position()  # (10, 10)
         
         # Try to reverse direction (from RIGHT to LEFT)
         engine.handle_input(Direction.LEFT)
         
-        # Direction should not change
-        assert engine.snake.direction == initial_direction
+        # handle_input queues the direction, doesn't change snake.direction immediately
+        assert engine.snake.direction == Direction.RIGHT
+        assert engine._pending_direction == Direction.LEFT
+        
+        # When snake moves, it should prevent the reversal
+        engine.tick()
+        
+        # After tick, snake should have continued in original direction (RIGHT)
+        assert engine.snake.direction == Direction.RIGHT
+        head = engine.snake.get_head_position()
+        assert head == (11, 10)  # Moved right, not left
     
     def test_wall_collision_ends_game(self):
         """Test that collision with wall ends the game."""

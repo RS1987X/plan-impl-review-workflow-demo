@@ -76,3 +76,19 @@ class Renderer:
         print("\n" + "=" * 40)
         print("\nPress R to restart or Q to quit")
         sys.stdout.flush()
+    
+    def display_victory(self, score: int) -> None:
+        """Display victory screen.
+        
+        Args:
+            score: Final score to display
+        """
+        self.clear_screen()
+        print("\n" + "=" * 40)
+        print(" " * 13 + "VICTORY!")
+        print(" " * 10 + "Board Complete!")
+        print("=" * 40)
+        print(f"\n{'Final Score:':>20} {score}")
+        print("\n" + "=" * 40)
+        print("\nPress R to restart or Q to quit")
+        sys.stdout.flush()
