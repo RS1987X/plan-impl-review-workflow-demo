@@ -1,0 +1,31 @@
+{
+  "name": "ai-workflow-worktrees-test",
+  "version": "1.0.0",
+  "description": "A test project to implement and test the AI workflow using Git worktrees.",
+  "main": "src/app.ts",
+  "scripts": {
+    "test": "jest",
+    "build": "tsc",
+    "start": "node dist/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/ai-workflow-worktrees-test.git"
+  },
+  "keywords": [
+    "AI",
+    "workflow",
+    "Git",
+    "worktrees",
+    "testing"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^4.5.4",
+    "jest": "^27.0.6",
+    "@types/jest": "^27.0.2",
+    "ts-jest": "^27.0.3"
+  }
+}
