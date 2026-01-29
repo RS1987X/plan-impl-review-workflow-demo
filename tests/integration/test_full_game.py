@@ -80,8 +80,8 @@ class TestFullGame:
         
         assert engine.snake.direction == Direction.LEFT
     
-    def test_game_over_on_wall_collision(self):
-        """Test that game ends when snake hits wall."""
+    def test_wrap_around_on_wall_hit(self):
+        """Test that snake wraps around when hitting wall instead of game over."""
         engine = GameEngine(board_width=10, board_height=10)
         
         # Position snake near right wall
@@ -92,8 +92,9 @@ class TestFullGame:
         engine.tick()  # Position (9, 5)
         assert engine.get_state() == GameState.RUNNING
         
-        engine.tick()  # Position (10, 5) - out of bounds
-        assert engine.get_state() == GameState.GAME_OVER
+        engine.tick()  # Position (0, 5) - wrapped to left side
+        assert engine.get_state() == GameState.RUNNING
+        assert engine.snake.get_head_position() == (0, 5)
     
     def test_game_over_on_self_collision(self):
         """Test that game ends when snake collides with itself."""

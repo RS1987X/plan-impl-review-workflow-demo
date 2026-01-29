@@ -58,11 +58,31 @@ class GameEngine:
     def check_collisions(self) -> None:
         """Check for all collision types and update game state accordingly."""
         head = self.snake.get_head_position()
+        head_x, head_y = head
         
-        # Check wall collision
-        if not self.board.is_valid_position(head[0], head[1]):
-            self.state = GameState.GAME_OVER
-            return
+        # Wrap around walls (no game over on wall collision)
+        wrapped = False
+        
+        # Wrap x coordinate (left/right walls)
+        if head_x < 0:
+            head_x = self.board.width - 1
+            wrapped = True
+        elif head_x >= self.board.width:
+            head_x = 0
+            wrapped = True
+        
+        # Wrap y coordinate (top/bottom walls)
+        if head_y < 0:
+            head_y = self.board.height - 1
+            wrapped = True
+        elif head_y >= self.board.height:
+            head_y = 0
+            wrapped = True
+        
+        # Update snake head with wrapped position
+        if wrapped:
+            self.snake.body[0] = (head_x, head_y)
+            head = (head_x, head_y)
         
         # Check self collision
         if self.snake.collides_with_self():

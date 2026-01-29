@@ -58,18 +58,81 @@ class TestGameEngine:
         # Direction should not change
         assert engine.snake.direction == initial_direction
     
-    def test_wall_collision_ends_game(self):
-        """Test that collision with wall ends the game."""
+    def test_wrap_around_right_wall(self):
+        """Test that snake wraps to left side when hitting right wall."""
         engine = GameEngine(board_width=10, board_height=10)
         
-        # Move snake to edge
+        # Position snake at right edge
         engine.snake.body = [(9, 5), (8, 5), (7, 5)]
         engine.snake.direction = Direction.RIGHT
         
-        # Move into wall
+        # Move toward wall
         engine.tick()
         
-        assert engine.state == GameState.GAME_OVER
+        # Should wrap to left side (x=0)
+        assert engine.snake.get_head_position() == (0, 5)
+        assert engine.state == GameState.RUNNING
+    
+    def test_wrap_around_left_wall(self):
+        """Test that snake wraps to right side when hitting left wall."""
+        engine = GameEngine(board_width=10, board_height=10)
+        
+        # Position snake at left edge
+        engine.snake.body = [(0, 5), (1, 5), (2, 5)]
+        engine.snake.direction = Direction.LEFT
+        
+        # Move toward wall
+        engine.tick()
+        
+        # Should wrap to right side (x=9)
+        assert engine.snake.get_head_position() == (9, 5)
+        assert engine.state == GameState.RUNNING
+    
+    def test_wrap_around_top_wall(self):
+        """Test that snake wraps to bottom when hitting top wall."""
+        engine = GameEngine(board_width=10, board_height=10)
+        
+        # Position snake at top edge
+        engine.snake.body = [(5, 0), (5, 1), (5, 2)]
+        engine.snake.direction = Direction.UP
+        
+        # Move toward wall
+        engine.tick()
+        
+        # Should wrap to bottom (y=9)
+        assert engine.snake.get_head_position() == (5, 9)
+        assert engine.state == GameState.RUNNING
+    
+    def test_wrap_around_bottom_wall(self):
+        """Test that snake wraps to top when hitting bottom wall."""
+        engine = GameEngine(board_width=10, board_height=10)
+        
+        # Position snake at bottom edge
+        engine.snake.body = [(5, 9), (5, 8), (5, 7)]
+        engine.snake.direction = Direction.DOWN
+        
+        # Move toward wall
+        engine.tick()
+        
+        # Should wrap to top (y=0)
+        assert engine.snake.get_head_position() == (5, 0)
+        assert engine.state == GameState.RUNNING
+    
+    def test_no_game_over_on_wall_hit(self):
+        """Test that game continues after wall hit (wrap-around happens)."""
+        engine = GameEngine(board_width=10, board_height=10)
+        
+        # Position snake near right wall
+        engine.snake.body = [(8, 5), (7, 5), (6, 5)]
+        engine.snake.direction = Direction.RIGHT
+        
+        # Move to edge and beyond
+        engine.tick()  # Position (9, 5)
+        assert engine.state == GameState.RUNNING
+        
+        engine.tick()  # Position (0, 5) - wrapped
+        assert engine.state == GameState.RUNNING
+        assert engine.snake.get_head_position()[0] == 0
     
     def test_self_collision_ends_game(self):
         """Test that self-collision ends the game."""
