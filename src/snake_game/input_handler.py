@@ -55,6 +55,8 @@ class InputHandler:
         Returns:
             Direction if valid input received, None otherwise
         """
+        char = None
+        
         # Check if input is available (non-blocking)
         if self._unix_terminal:
             # Use select for non-blocking input on Unix
@@ -73,6 +75,10 @@ class InputHandler:
             except ImportError:
                 # No way to do non-blocking input
                 return None
+        
+        # Handle no input received
+        if char is None:
+            return None
         
         # Map keys to directions
         key_map = {

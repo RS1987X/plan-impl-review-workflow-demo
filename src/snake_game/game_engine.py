@@ -51,9 +51,9 @@ class GameEngine:
             direction: New direction to move
         """
         if self.state == GameState.RUNNING:
-            # Direction validation happens in snake.move()
-            # Store the direction to be applied on next tick
-            self.snake.direction = direction if direction != self.snake.direction.opposite() else self.snake.direction
+            # Prevent reversing direction (checked here and also in snake.move)
+            if direction != self.snake.direction.opposite():
+                self.snake.direction = direction
     
     def check_collisions(self) -> None:
         """Check for all collision types and update game state accordingly."""

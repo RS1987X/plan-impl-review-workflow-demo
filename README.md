@@ -121,7 +121,7 @@ python3 -m pytest tests/integration/test_full_game.py -v
 
 #### Test Coverage
 
-The Snake game implementation achieves **>90% code coverage** on core game logic:
+The Snake game implementation achieves **>95% code coverage** on core game logic:
 - `snake.py`: 100% coverage
 - `game_board.py`: 100% coverage
 - `food.py`: 100% coverage

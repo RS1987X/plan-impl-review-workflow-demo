@@ -2,11 +2,31 @@
 
 import sys
 import time
-import select
 from snake_game.game_engine import GameEngine
 from snake_game.input_handler import InputHandler
 from snake_game.renderer import Renderer
 from snake_game.types import GameState
+
+
+def wait_for_input(timeout=0.1):
+    """Wait for keyboard input with platform-specific handling.
+    
+    Args:
+        timeout: Maximum time to wait in seconds
+        
+    Returns:
+        Input character or None
+    """
+    try:
+        import select
+        # Unix-like systems
+        if select.select([sys.stdin], [], [], timeout)[0]:
+            return sys.stdin.read(1)
+    except (ImportError, OSError):
+        # Windows or non-Unix systems - use basic approach
+        # Note: This is a simplified version for the game to run
+        pass
+    return None
 
 
 def main():
@@ -46,9 +66,9 @@ def main():
                 
                 # Wait for restart or quit
                 while engine.get_state() == GameState.GAME_OVER:
-                    # Check for input
-                    if select.select([sys.stdin], [], [], 0.1)[0]:
-                        char = sys.stdin.read(1)
+                    # Check for input using helper function
+                    char = wait_for_input(0.1)
+                    if char:
                         if char in ('q', 'Q', '\x1b'):  # Quit
                             running = False
                             break
