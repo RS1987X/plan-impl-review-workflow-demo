@@ -126,3 +126,20 @@ class GameEngine:
         self.score = 0
         self.state = GameState.RUNNING
         self.food.spawn(self.board, self.snake)
+    
+    def pause(self) -> None:
+        """Pause the game."""
+        if self.state == GameState.RUNNING:
+            self.state = GameState.PAUSED
+    
+    def unpause(self) -> None:
+        """Unpause the game."""
+        if self.state == GameState.PAUSED:
+            self.state = GameState.RUNNING
+    
+    def toggle_pause(self) -> None:
+        """Toggle between paused and running states."""
+        if self.state == GameState.RUNNING:
+            self.pause()
+        elif self.state == GameState.PAUSED:
+            self.unpause()

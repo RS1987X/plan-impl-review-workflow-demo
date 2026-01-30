@@ -92,14 +92,21 @@ python3 src/main.py
 
 **Controls:**
 - **Arrow Keys** or **WASD**: Change snake direction
+- **P**: Pause/Resume game
 - **Q** or **ESC**: Quit game
 - **R**: Restart game (when game over)
+
+**Game Features:**
+- Three difficulty levels (Easy, Medium, Hard) - selectable at start
+- Colorized terminal display (snake=green, food=red, borders=blue)
+- High score persistence across game sessions
+- Pause/resume functionality
 
 **Game Rules:**
 - Snake starts at center of 20x20 grid with length 3
 - Eat food (•) to grow and gain 10 points
-- Avoid walls and self-collision
-- Game ends when snake hits wall or itself
+- Snake wraps around walls (no game over on wall hit)
+- Game ends when snake collides with itself
 
 #### Running Tests
 
@@ -121,12 +128,13 @@ python3 -m pytest tests/integration/test_full_game.py -v
 
 #### Test Coverage
 
-The Snake game implementation achieves **>95% code coverage** on core game logic:
+The Snake game implementation achieves **>90% code coverage** on core game logic:
 - `snake.py`: 100% coverage
 - `game_board.py`: 100% coverage
 - `food.py`: 100% coverage
-- `game_engine.py`: 96% coverage
+- `game_engine.py`: 97% coverage
 - `types.py`: 100% coverage
+- `high_score.py`: 82% coverage
 
 Note: InputHandler and Renderer components are not covered by unit tests as they handle terminal I/O, which is tested through manual gameplay.
 
@@ -134,13 +142,13 @@ Note: InputHandler and Renderer components are not covered by unit tests as they
 
 This project implements a structured approach to software development using Git worktrees, allowing for efficient planning, implementation, and review processes. Each role is clearly defined to minimize context switching and enhance productivity.
 
-## Snake Game Phase 1 Features
+## Snake Game Features
 
-✅ **Implemented:**
-- 20x20 grid game board with wall boundaries
+### ✅ Phase 1 Features (Implemented)
+- 20x20 grid game board with wall wrap-around
 - Snake movement in 4 directions (continuous motion)
 - Food spawning at random valid positions
-- Collision detection (walls and self)
+- Collision detection (self-collision ends game)
 - Score tracking (+10 points per food)
 - Snake growth when eating food
 - Game over state with score display
@@ -149,4 +157,18 @@ This project implements a structured approach to software development using Git 
 - Direction reversal prevention
 - Comprehensive unit and integration tests
 
-**Phase 2 and 3 features** (pause, difficulty levels, persistence, enhanced UI) are not yet implemented per the project scope.
+### ✅ Phase 2 Features (Implemented)
+- **Pause/Resume:** Press P to pause game, displays "PAUSED", P to resume
+- **Difficulty Levels:** Easy/Medium/Hard selectable at game start (adjusts speed)
+- **High Score Persistence:** Scores saved to file, survive restarts
+- **Enhanced Rendering:** Colors for better readability
+  - Snake: Green
+  - Food: Red
+  - Borders: Blue
+  - Pause indicator: Yellow
+
+### 📋 Phase 3 Features (Future)
+- Multiplayer functionality
+- Online leaderboards
+- Sound effects
+- GUI version
