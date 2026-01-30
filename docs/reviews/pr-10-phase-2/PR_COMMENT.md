@@ -167,4 +167,4 @@ python3 -m pytest tests/ --cov=src/snake_game --cov-report=term-missing
 
 ---
 
-**Full detailed review available in:** `REVIEW_PR10.md`
+**Full detailed review available in:** `docs/reviews/pr-10-phase-2/REVIEW_PR10.md`
