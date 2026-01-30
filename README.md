@@ -64,10 +64,12 @@ This project is designed to implement and test the workflow described in the AI 
    python3 --version
    ```
 
-2. Install test dependencies (pytest):
-   ```bash
-   pip3 install pytest pytest-cov
-   ```
+2. Create a virtual environment and install dev/test dependencies:
+  ```bash
+  python3 -m venv .venv
+  ./.venv/bin/python -m pip install -U pip
+  ./.venv/bin/python -m pip install -r requirements-dev.txt
+  ```
 
 ## Usage Guidelines
 
@@ -112,18 +114,18 @@ python3 src/main.py
 
 Run all tests:
 ```bash
-python3 -m pytest tests/ -v
+./.venv/bin/python -m pytest tests/ -v
 ```
 
 Run tests with coverage report:
 ```bash
-python3 -m pytest tests/ --cov=src/snake_game --cov-report=term-missing
+./.venv/bin/python -m pytest tests/ --cov=src/snake_game --cov-report=term-missing
 ```
 
 Run specific test files:
 ```bash
-python3 -m pytest tests/unit/test_snake.py -v
-python3 -m pytest tests/integration/test_full_game.py -v
+./.venv/bin/python -m pytest tests/unit/test_snake.py -v
+./.venv/bin/python -m pytest tests/integration/test_full_game.py -v
 ```
 
 #### Test Coverage

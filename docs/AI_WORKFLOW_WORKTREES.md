@@ -279,6 +279,7 @@ Suggested review checklist:
 - Confirm you’re reviewing the right branch/PR (implementer should state the exact branch name; watch for `copilot/...`)
 - No GUI blocking introduced (threading is correct)
 - Tests cover core logic + edge cases
+- Maintainability artifacts updated (see section 9)
 - Logging is reasonable (no prints)
 - CSV/export format remains stable (if applicable)
 
@@ -290,6 +291,41 @@ cd ~/projects/Thesys-review
 git diff origin/main...HEAD
 source .venv/bin/activate && PYTHONPATH=$(pwd) pytest tests/
 ```
+
+---
+
+## 9) Maintainability audit trail (recommended, repeatable)
+
+The goal is to make it easy to come back later and evolve the project safely.
+
+### What to capture per feature/PR
+
+**Planner (docs-only worktree)**
+- Create a new plan doc per feature (don’t grow one plan forever).
+- If the feature introduces a meaningful design choice, add an ADR under `docs/decisions/`.
+
+**Implementer (code worktree / Coding Agent PR)**
+- Keep runtime + dev dependencies reproducible:
+	- update `requirements-dev.txt` (or `pyproject.toml`)
+	- do not commit `.venv/`
+- If code structure changes, update `docs/ARCHITECTURE.md` (module map + state transitions).
+- If the review raises non-blocking improvements you’re deferring, add them to `docs/FOLLOW_UPS.md`.
+
+**Reviewer (clean review worktree)**
+- Check that new/changed behavior is tested.
+- Confirm the maintainability artifacts are updated when needed:
+	- `docs/ARCHITECTURE.md` updated for structural changes
+	- `docs/decisions/` has an ADR if a key decision was made
+	- `docs/FOLLOW_UPS.md` records deferred items (linked back to review)
+
+### Suggested “Definition of Done” add-on
+
+Add this as a standard checkbox list in PR descriptions:
+- [ ] Plan doc linked
+- [ ] Tests added/updated; all tests pass
+- [ ] `docs/ARCHITECTURE.md` updated if structure/state changed
+- [ ] ADR added if a key decision was made
+- [ ] Deferred review items tracked (issues or `docs/FOLLOW_UPS.md`)
 
 ---
 
