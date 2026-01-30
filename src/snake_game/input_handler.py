@@ -13,6 +13,7 @@ class InputHandler:
         """Initialize the input handler."""
         self._configured = False
         self._old_settings = None
+        self._last_non_direction_char = None  # Buffer for P, Q, etc.
         
         # Try to import termios for Unix systems
         try:
@@ -105,10 +106,30 @@ class InputHandler:
                     return Direction.RIGHT
                 elif next_chars == '[D':
                     return Direction.LEFT
-            # ESC key for quit handled in main loop
+            # ESC key for quit - store it so main loop can see it
+            self._last_non_direction_char = char
             return None
         
-        return key_map.get(char)
+        direction = key_map.get(char)
+        if direction:
+            return direction
+        
+        # Not a direction key - store it for pause/quit checking
+        self._last_non_direction_char = char
+        return None
+    
+    def get_last_char(self) -> Optional[str]:
+        """Get the last non-direction character that was read.
+        
+        This allows checking for P/Q/etc after get_input() consumed them.
+        Clears the buffer after returning.
+        
+        Returns:
+            The last non-direction character, or None
+        """
+        char = self._last_non_direction_char
+        self._last_non_direction_char = None
+        return char
     
     def should_quit(self, char: str) -> bool:
         """Check if user wants to quit.

@@ -83,8 +83,8 @@ def main():
                 if direction:
                     engine.handle_input(direction)
                 
-                # Check for pause input
-                char = wait_for_input(0)
+                # Check for pause/quit from keys that get_input() read but weren't directions
+                char = input_handler.get_last_char()
                 if char:
                     if input_handler.should_quit(char):
                         running = False
