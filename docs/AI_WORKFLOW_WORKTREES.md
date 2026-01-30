@@ -201,6 +201,9 @@ Rule of thumb:
 
 Use this when you want clean handoffs and durable review artifacts (PR + review comments).
 
+**Where do review docs go?**
+- Store long-lived review artifacts under `docs/reviews/<pr-or-feature>/` (instead of repo root) so `main` stays tidy.
+
 ### A) One-time: create worktrees
 
 From the base repo directory:
